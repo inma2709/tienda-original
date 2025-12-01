@@ -2,13 +2,13 @@
    -  mkdir backend y dentro las capertas de config y routes
 
 # 2.- Creamos los paquetes y depedencias
-    - npm init -y --> Crea el package.json
-    - npm install express cors dotenv mysql2 --> instalamos express, cors, los archivo .env y las dependencias con mysql
-    - npm install --save-dev nodemon --> Realizar la autorecarga del proyecto por cada guardado
+   * - npm init -y --> Crea el package.json
+   * - npm install express cors dotenv mysql2 --> instalamos express, cors, los archivo .env y las dependencias con mysql
+   * - npm install --save-dev nodemon --> Realizar la autorecarga del proyecto por cada guardado
 
 # 3.- Modificamos package.json 
-    - "type": "module" --> para poder usar modulos importandolos y exportandolos
-    - Dentro de "scripts"{} añadimos "start": "node server.js",
+   * - "type": "module" --> para poder usar modulos importandolos y exportandolos
+   * - Dentro de "scripts"{} añadimos "start": "node server.js",
     "dev": "nodemon server.js" --> son 2 formas de inicar el servidor. "start" para iniciar el proyecto y "dev" para el desarrollo para que se refresque automaticamente cada vez que guardemos. 
 
 # 4.- Creamos nuestro archivo .env
@@ -50,16 +50,16 @@
 
     importamos "dotenv/config", express, cors, pool y rutas
 
-    - Llamamos a express y para ello la metemos en una variable llamada app para poder usar sus componentes (use, get, post, listen, etc)
+   * - Llamamos a express y para ello la metemos en una variable llamada app para poder usar sus componentes (use, get, post, listen, etc)
 
-    - Creamos las middlwares 
+   * - Creamos las middlwares 
         app.use(cors()) y app.use(express.json())
     
-    - Creamos ruta raíz, que podemos usar para comprobar que el servidor funciona correctamente. 
+   * - Creamos ruta raíz, que podemos usar para comprobar que el servidor funciona correctamente. 
         app.get("/", (req,res)=> {
             res.send('API Node + MySQL - Bloque 3');
         });
-    - Arrancamos el servidor 
+   * - Arrancamos el servidor 
         const PORT = process.env.PORT || 3000;
 
         app.listen(PORT, () => {
@@ -77,11 +77,11 @@
 
 # 9.- Importamos productosRoutes y lo llamamos y generamos una ruta dentro del servidor. 
 
-    - Importamos el objeto productosRoutes desde su archivo.
+  *  - Importamos el objeto productosRoutes desde su archivo.
 
-    - Indicamos que ruta usar y que objeto usa esa ruta --> app.use("/api/productos", productosRoutes);
+   * - Indicamos que ruta usar y que objeto usa esa ruta --> app.use("/api/productos", productosRoutes);
 
-    - Si inicamos el servidor y buscamos la ruta nos devolverá el mensaje que le dimos para mostrarnos al usar esa ruta puesto que la petición que le damos es GET
+  *  - Si inicamos el servidor y buscamos la ruta nos devolverá el mensaje que le dimos para mostrarnos al usar esa ruta puesto que la petición que le damos es GET
 
 # 10.- Con "pool" podemos realiza una petición GET al servidor para comprobar que todo está funcionando de forma correcta. 
     
@@ -98,9 +98,9 @@
     Estas líneas sirven para recargar los datos de la base de datos y que no den errores por problemas con la conexión, usuario, contraseña, etc. 
     
 #   - Creamos la funcion "sync function crearBBDD()"
-    dentro de esta función en el archivo init.db.js realizamos la creación de tablas y columnas para nuestra BBDD. 
+   * dentro de esta función en el archivo init.db.js realizamos la creación de tablas y columnas para nuestra BBDD. 
 
-        // TABLA CLIENTES
+    ```  // TABLA CLIENTES
         await pool.query(`
             CREATE TABLE IF NOT EXISTS clientes (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -109,7 +109,7 @@
                 password VARCHAR(255) NOT NULL,
                 creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        `);
+        `);```
     await --> es para que la función sea asincrona 
     CREATE TABLE IF NOT EXISTS --> Aquí decimos que cree la tabla si no existe, para que no borre si existe ya una igual. 
 
@@ -119,39 +119,39 @@
 
 # 13.- productos.model 
 
-    - Importamos "pool" para conectar con la BBDD. 
-    - Creamos la función asincrona obtenerTodos. Desde aquí realizamos la consulta a la BBDD de MySQL y le pedimos que cree un array de filas (rows) para mostrarlos.
+  *  - Importamos "pool" para conectar con la BBDD. 
+  *  - Creamos la función asincrona obtenerTodos. Desde aquí realizamos la consulta a la BBDD de MySQL y le pedimos que cree un array de filas (rows) para mostrarlos.
     ![alt text](image.png) 
 
 # 14.- productos.controller
 
-    - Importamos todas la funciones de productos.model.js con * y lo renombramos como productosModel creando así un objeto con todas la funciones del archivo. De esta manera importamos todas las funciones a la vez y no tenemos que ir una a una.
+  *  - Importamos todas la funciones de productos.model.js con * y lo renombramos como productosModel creando así un objeto con todas la funciones del archivo. De esta manera importamos todas las funciones a la vez y no tenemos que ir una a una.
 
-    - Creamos la función getProductos. Aquí llamamos la función obtenerProductos de productosModel -->  const productos = productosModel.obternerProductos 
+  *  - Creamos la función getProductos. Aquí llamamos la función obtenerProductos de productosModel -->  const productos = productosModel.obternerProductos 
 
-    - Realiza la petición al servidor y ejecuta la consulta de la funcion obtenerProductos tantas veces como larga sea la tabla --> productos.length 
+  *  - Realiza la petición al servidor y ejecuta la consulta de la funcion obtenerProductos tantas veces como larga sea la tabla --> productos.length 
     y nos guardará los datos obtenidos en data --> data: productos
     ![alt text](image-1.png)
 # 15. productos.routes 
 
-    - Importamos todas las funciones del archivo productos.controller.js usanao el selector universal (*) y lo renombramos como productosController para poder usar las funciones como métodos. 
+  *  - Importamos todas las funciones del archivo productos.controller.js usanao el selector universal (*) y lo renombramos como productosController para poder usar las funciones como métodos. 
 
-    - Creamos la ruta para la petición GET al servidor --> router.get ("/",productosController.getProductos)
+  *  - Creamos la ruta para la petición GET al servidor --> router.get ("/",productosController.getProductos)
 
-    - productosController.getProductos. Aquí tenemos el objeto creado en la importación y con el (.) llamamos la función que tenemos creada "getProductos". 
+  *  - productosController.getProductos. Aquí tenemos el objeto creado en la importación y con el (.) llamamos la función que tenemos creada "getProductos". 
     ![alt text](image-2.png)
 # 16.- Creamos el frontend
-    - Creamos los archivos index.html, styles.css y script.js
+  *  - Creamos los archivos index.html, styles.css y script.js
 
-    - Creamos un html donde tenga un botón para obtener los datos del JSON bruto y nos muestre el listado de productos de las BBDD. Y con la etiqueta <pre> mostramos los datos,
+  *  - Creamos un html donde tenga un botón para obtener los datos del JSON bruto y nos muestre el listado de productos de las BBDD. Y con la etiqueta <pre> mostramos los datos,
     puesto que se trata de una etiqueta para mostrar código. 
     ![alt text](image-3.png)
 
-    - Luego, creamos el script: 
+  *  - Luego, creamos el script: 
 
 # 17.- Creamos el script del frontend y conectamos con el backend
 
-    Para traer los datos del backend debemos usar el método "fetch" y desde aquí indicarle la URL donde buscar los datos. Pero antes de todo esto: 
+  *  Para traer los datos del backend debemos usar el método "fetch" y desde aquí indicarle la URL donde buscar los datos. Pero antes de todo esto: 
         - Creamos la variable global URL_API o API_URL donde indicamos la dirección del backend "http://localhost.3000".
         - Creamos una función asincrona verJSON () 
         - Usamos try...catch. 
@@ -172,7 +172,7 @@
 
 # 18.- Damos estilo a nuestros productos
     
-    Ahora vamos crear unas tarjetas para que cuando realicemos la petición se generen con los datos de los productos y cree un campo para cada dato, quitando así el estilo JSON. Para ellos primero realizamos la función de petición al back solicitando lo datos. Cómo hacemos esto? 
+  *  Ahora vamos crear unas tarjetas para que cuando realicemos la petición se generen con los datos de los productos y cree un campo para cada dato, quitando así el estilo JSON. Para ellos primero realizamos la función de petición al back solicitando lo datos. Cómo hacemos esto? 
 
         1.- Creamos la función cargarProductos. Aquí traeremos desde la URL indicada los datos y estos los convertiremos a JSON para que el navegador pueda leerlo.
         ![alt text](image-9.png)
@@ -184,7 +184,7 @@
     Ya tenemos la petición a back. Desde esta petición traemos los datos a la función mostrarProductos que vamos a crear ahora. Los datos los trae de la siguiente forma: 
         - ![alt text](image-12.png) datos es una variable que creamos en nuestro script de front y data es una variable que viene de productos.controller que nos trae los datos de la tabla productos.
 
-    Sabiendo esto. Creamos la función mostrarProductos(): 
+   * Sabiendo esto. Creamos la función mostrarProductos(): 
 
         1.- Indicamos dentro de los parentesis el parámetro lista, que usaremos después para mapear todo el listado de productos que traemos desde la BBDD.
         ![alt text](image-13.png) 
@@ -196,5 +196,5 @@
         ![alt text](image-15.png)
         5.- El método ".join("")" sirve para que al crear cada tarjeta no se separece por comas, que es como se mostrarían los datos obtenidos de un array, entonces con este método conseguimos cambiar la coma por la separación que nosotros indiquemos, que en este caso es un espacio vacío. 
     
-    Por último, y como hicimos en la anterior petición. Creamos un evento en el cúal de decimos que primero cargue el DOM y que luego se ejecute la funcion cargarProductos, para que de esta forma no aparezca vacío y tenga tiempo a obtener los datos de la BBDD. 
+   * Por último, y como hicimos en la anterior petición. Creamos un evento en el cúal de decimos que primero cargue el DOM y que luego se ejecute la funcion cargarProductos, para que de esta forma no aparezca vacío y tenga tiempo a obtener los datos de la BBDD. 
     ![alt text](image-16.png)
