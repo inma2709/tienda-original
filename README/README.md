@@ -1,38 +1,31 @@
-Perfecto. Aquí tienes **el índice con enlaces internos** totalmente funcional, listo para pegar en tu README.md.
+# INDICE
 
----
+1. **[1.- Creamos las capertas](#1-creamos-las-capertas)**
+2. **[2.- Creamos los paquetes y depedencias](#2-creamos-los-paquetes-y-depedencias)**
+3. **[3.- Modificamos packagejson](#3-modificamos-packagejson)**
+4. **[4.- Creamos nuestro archivo env](#4-creamos-nuestro-archivo-env)**
+5. **[5.- Creamos la configuración dentro de dbjs](#5-creamos-la-configuración-dentro-de-dbjs)**
+6. **[6.- Creamos el archivo gitignore](#6-creamos-el-archivo-gitignore)**
+7. **[7.- Creamos serverjs](#7-creamos-serverjs)**
+8. **[8.- Creamos la primera ruta y el archivo de rutas productosroutesjs](#8-creamos-la-primera-ruta-y-el-archivo-de-rutas-productosroutesjs)**
+9. **[9.- Importamos productosroutes y lo llamamos en el servidor](#9-importamos-productosroutes-y-lo-llamamos-en-el-servidor)**
+10. **[10.- Con pool comprobamos conexión](#10-con-pool-comprobamos-conexión)**
+11. **[11.- Creamos el archivo initdbjs](#11-creamos-el-archivo-initdbjs)**
+12. **[12.- Creamos la carpeta controlador y controlador](#12-creamos-la-carpeta-controlador-y-controlador)**
+13. **[13.- productosmodel](#13-productosmodel)**
+14. **[14.- productoscontroller](#14-productoscontroller)**
+15. **[15.- productosroutes](#15-productosroutes)**
+16. **[16.- Creamos el frontend](#16-creamos-el-frontend)**
+17. **[17.- Creamos el script del frontend y conectamos con el backend](#17-creamos-el-script-del-frontend-y-conectamos-con-el-backend)**
+18. **[18.- Damos estilo a nuestros productos](#18-damos-estilo-a-nuestros-productos)**
+19. **[19.- Login](#19-login)**
+20. **[20.- clientesmodels](#20-clientesmodels)**
+21. **[21.- authcontrollerjs](#21-authcontrollerjs)**
+22. **[22.- Creamos authroutesjs](#22-creamos-authroutesjs)**
+23. **[23.- Configuramos en el servidor la ruta para auth](#23-configuramos-en-el-servidor-la-ruta-para-auth)**
+24. **[24.- Probamos las rutas por thunder](#24-probamos-las-rutas-por-thunder)**
+25. **[25.- Creamos el formulario de registro y de inicio de sesión en frontend](#25-creamos-el-formulario-de-registro-y-de-inicio-de-sesión-en-frontend)**
 
-# 📑 **ÍNDICE CON ENLACES**
-
-> ⚠️ *Asegúrate de que los títulos en tu README coincidan exactamente para que los enlaces funcionen.*
-
----
-
-1. **[Creación de carpetas del proyecto](#1--creación-de-carpetas-del-proyecto)**
-2. **[Instalación de paquetes y dependencias](#2--instalación-de-paquetes-y-dependencias)**
-3. **[Modificación del packagejson](#3--modificación-del-packagejson)**
-4. **[Creación y contenido del archivo env](#4--creación-y-contenido-del-archivo-env)**
-5. **[Configuración de la base de datos dbjs](#5--configuración-de-la-base-de-datos-dbjs)**
-6. **[Archivo gitignore](#6--archivo-gitignore)**
-7. **[Configuración del servidor serverjs](#7--configuración-del-servidor-serverjs)**
-8. **[Creación de la primera ruta productosroutesjs](#8--creación-de-la-primera-ruta-productosroutesjs)**
-9. **[Importación y uso de la ruta de productos en el servidor](#9--importación-y-uso-de-la-ruta-de-productos-en-el-servidor)**
-10. **[Comprobación de conexión a BBDD con pool](#10--comprobación-de-conexión-a-bbdd-con-pool)**
-11. **[Creación del archivo initdbjs](#11--creación-del-archivo-initdbjs)**
-12. **[Creación de carpetas controller y model](#12--creación-de-carpetas-controller-y-model)**
-13. **[productosmodeljs](#13--productosmodeljs)**
-14. **[productoscontrollerjs](#14--productoscontrollerjs)**
-15. **[productosroutesjs](#15--productosroutesjs)**
-16. **[Creación del frontend](#16--creación-del-frontend)**
-17. **[Conexión del frontend con el backend](#17--conexión-del-frontend-con-el-backend)**
-18. **[Creación del sistema de tarjetas de productos](#18--creación-del-sistema-de-tarjetas-de-productos)**
-19. **[Implementación del Login](#19--implementación-del-login)**
-20. **[clientesmodeljs](#20--clientesmodeljs)**
-21. **[authcontrollerjs](#21--authcontrollerjs)**
-22. **[authroutesjs](#22--authroutesjs)**
-23. **[Configuración de la ruta auth en el servidor](#23--configuración-de-la-ruta-auth-en-el-servidor)**
-24. **[Pruebas de la API con Thunder Client](#24--pruebas-de-la-api-con-thunder-client)**
-25. **[Formularios de registro e inicio de sesión](#25--formularios-de-registro-e-inicio-de-sesión)**
 
 
 # 1.- Creamos las capertas: 
