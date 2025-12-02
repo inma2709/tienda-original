@@ -1,5 +1,15 @@
 URL_API = "http://localhost:3000/api";
 
+// Estados 
+let estado = {
+    usuario: null,          // 👤 Información del usuario conectado (null = nadie conectado)
+    token: null,           // 🔑 Clave secreta para comunicarse con el servidor
+    productos: [],         // 🛍️ Array con todos los productos del catálogo
+    carrito: [],          // 🛒 Array con productos que el usuario quiere comprar
+    pedidos: [],          // 📦 Array con los pedidos que ha realizado el usuario
+    categoria: '',        // 🏷️ Filtro actual de categoría (vacío = todas las categorías)
+};
+
 async function verJSON() {
     try{
         const respuesta = await fetch (`${URL_API}/productos`);
@@ -14,6 +24,7 @@ async function verJSON() {
 
 document.addEventListener("DOMContentLoaded", () =>{
     document.getElementById("verJSON").addEventListener("click",verJSON);
+    cargarProductos();
 })
 
 async function cargarProductos() {
@@ -51,7 +62,67 @@ function mostrarProductos(lista){
         `).join ('');
 }
 
-// 🚀 Cuando la página termine de cargar, ejecutamos la función
-document.addEventListener("DOMContentLoaded", () => {
-    cargarProductos();
-});
+
+// Login y tokens
+
+function obtenerCabecerasAuth() {
+    return {
+        'Content-Type': 'application/json',                    // Enviamos datos en formato JSON
+        'Authorization': `Bearer ${estado.token}`             // Incluimos el token del usuario
+    };
+}
+
+async function iniciarSesion(email, password) {
+    try {
+        const respuesta = await fetch(`${URL_API}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const datos = await respuesta.json();
+        
+        if (respuesta.ok) {
+            guardarSesion(datos.token, datos.usuario);
+            await cargarDatosUsuario();
+            mostrarInterfaz();
+            mostrarAlerta('¡Bienvenido!', `Hola ${datos.usuario.nombre}`);
+        } else {
+            throw new Error(datos.message || 'Error al iniciar sesión');
+        }
+    } catch (error) {
+        console.error('❌ Error login:', error);
+        throw error;
+    }
+}
+
+// Registro usuarios
+async function registrarUsuario(nombre, email, password) {
+    try {
+        console.log('📝 Intentando registrar usuario:', email);
+        
+        const respuesta = await fetch(`${URL_API}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, email, password })
+        });
+        
+        const datos = await respuesta.json();
+        console.log('📡 Respuesta del servidor:', respuesta.status, datos);
+        
+        if (respuesta.ok) {
+            guardarSesion(datos.token, datos.usuario);
+            
+            // Para usuarios nuevos, no cargar pedidos inmediatamente
+            // Solo actualizar la interfaz
+            mostrarInterfaz();
+            mostrarAlerta('¡Registrado!', `Bienvenido ${datos.usuario.nombre}`);
+            console.log('✅ Usuario registrado exitosamente');
+        } else {
+            throw new Error(datos.message || 'Error al registrarse');
+        }
+    } catch (error) {
+        console.error('❌ Error registro:', error);
+        throw error;
+    }
+}

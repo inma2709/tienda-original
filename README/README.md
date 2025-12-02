@@ -374,3 +374,24 @@ Ahora intentamos iniciar sesion
     1.- Creamos el formulario de login
       --> Datos clave: Input type:"email" y type:"password", además de required en ambos para impedir que pulsen el botón de "Iniciar" sin rellenar los campos.
       --> Creamos el boton "Iniciar" type:"submit" para que envie los datos una vez lo indiquemos en el script con los eventos. 
+
+# 26.- Creamos el script
+  --> Creamos la variable estado. Aquí definimos un objeto que guarda los datos y mantiene la sesión del usuario abierta. 
+  Esta variable no se usa en REACT, pero en HTML podemos crearla. 
+  * 1.- Función registrar usuario: 
+      --> tenemos en parámetros los datos que obtendremos del front (nombre,emai y password)
+      --> Creamos las variable respuesta donde realizamos con fetch la petición, que en este caso no será de lectura (GET), sino de escritura (POST).
+
+      En headers indicamos que los datos se enviarán en formato JSON
+
+      En body, le decimos que le enviamos un objeto con esos 3 datos con formato JSON, ya que es lo que espera y puede leer el backend. 
+      ![alt text](image-34.png)
+
+      De esta forma estamos enviando los datos obtenidos del formulario desde el front al backend para que los guarde en la BBDD usando la función crear clientes, donde tiene la orden SQL, aunque antes de todo esto, y para ser exactos el flujo de datos sería el siguiente: 
+
+      Front -> Script Front -> Server -> authRoutes -> authController -> clientesModel -> pool (db.js) -> .env
+
+      -->El front envia los datos que los procesa con el script desde la función registrarUsario()
+      --> Desde aquí viaja al server por la ruta "www.localhost:3000/api/auth/register"
+      --> Donde está usando también la ruta de auth.routes.js; después los datos obtenidos del front pasan a la función register () y aquí procesa los datos y encripta la contraseña con bcript.hash
+      --> Luego todos estos datos los envía a la función crearCliente() de clientes.model.js donde se encuentra con la orden SQL y con los datos de pool que sirven para conectarse a la BBDD y aquí ya se ejecuta la orden de guardado. 
