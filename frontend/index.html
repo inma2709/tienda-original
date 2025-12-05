@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Uniendo el back y el front</title>
+</head>
+<body>
+
+    <nav class="auth-nav" id="authNav">
+                  <!-- 🔄 Este contenido se genera dinámicamente por JavaScript -->
+            </nav>
+
+<section class="auth-section" id="authSection">
+                <div class="auth-container">
+                    <div class="auth-form" id="loginForm">
+                        <h3>🔑 Iniciar Sesión</h3>
+                        
+                        <form id="loginFormElement">
+                            <div class="form-group">
+                                <label for="loginEmail">Email:</label>
+                                <input type="email" id="loginEmail" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="loginPassword">Contraseña:</label>
+                                <input type="password" id="loginPassword" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        </form>
+                        
+                        <p class="auth-toggle">
+                            ¿No tienes cuenta? 
+                            <a href="#" id="showRegister">Regístrate aquí</a>
+                        </p>
+                    </div>
+
+                    <div class="auth-form hidden" id="registerForm">
+                        <h3>📝 Crear Cuenta</h3>
+                        
+                        <form id="registerFormElement">
+                            <div class="form-group">
+                                <label for="registerNombre">Nombre completo:</label>
+                                <input type="text" id="registerNombre" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="registerEmail">Email:</label>
+                                <input type="email" id="registerEmail" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="registerPassword">Contraseña:</label>
+                                <input type="password" id="registerPassword" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+                        </form>
+                        
+                        <p class="auth-toggle">
+                            ¿Ya tienes cuenta? 
+                            <a href="#" id="showLogin">Inicia sesión aquí</a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+    <h1>📦 Ver datos JSON </h1>
+    <button id="verJSON">Ver JSON</button>
+<pre style="background-color: black; color: rgb(3, 212, 3);" id="listaProductos"></pre>
+    
+<h2>📦 Listado de productos</h2>
+
+<div id="productos"> Aquí deberían aparecer los productos</div>
+
+
+
+<script src="script.js"></script>
+</body>
+</html>
