@@ -1,18 +1,19 @@
 import pool from "../config/db.js";
 
-export async function crearPedido(clienteId) {
+export async function crearPedido(clienteId,total) {
   // Ejecutar INSERT en la tabla pedidos
   // MySQL asignará automáticamente el ID y la fecha actual
   const [result] = await pool.query(
-    "INSERT INTO pedidos (cliente_id) VALUES (?)",
-    [clienteId]
+    "INSERT INTO pedidos (cliente_id,total) VALUES (?,?)",
+    [clienteId,total]
   );
 
   // Devolver la información del pedido creado
   return {
     id: result.insertId,      // ID generado automáticamente por MySQL
     cliente_id: clienteId,    // ID del cliente que creó el pedido
-    estado: "pendiente",      // Estado por defecto
+    estado: "pendiente",  
+    total    // Estado por defecto
   };
 }
 
@@ -88,10 +89,10 @@ export async function actualizarEstado(idPedido, nuevoEstado) {
   };
 }
 
-export async function crear({ cliente_id, productos = [] }) {
+export async function crear({ cliente_id, productos = [],total }) {
   try {
     // Paso 1: Crear la cabecera del pedido
-    const pedido = await crearPedido(cliente_id);
+    const pedido = await crearPedido(cliente_id,total);
     
     // Paso 2: Agregar productos al pedido (si hay productos)
     const productosAgregados = [];
@@ -110,6 +111,7 @@ export async function crear({ cliente_id, productos = [] }) {
       id: pedido.id,
       cliente_id: pedido.cliente_id,
       estado: pedido.estado,
+      total,
       productos: productosAgregados,
       total_productos: productosAgregados.length
     };

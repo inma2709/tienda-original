@@ -128,7 +128,7 @@ h1, h2 {
 }
 
 .hidden {
-    display: none;
+    display: none; /*oculto si no se dice lo contrario*/
 }
 
 /* ===== HEADER SIMPLE ===== */

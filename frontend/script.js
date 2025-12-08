@@ -297,12 +297,12 @@ async function registrarUsuario(nombre, email, password) {
 }
 
 // =============================
-// 🎛 INTERFAZ DE USUARIO
-// (Mostrar/ocultar secciones según estado)
+// 🎛 INTERFAZ DE USUARIO. 
+// (Mostrar/ocultar secciones según si el usuario esta logado o no: muestra los productos para comprar)
 // =============================
 
 /**
- * mostrarInterfaz() - El "director" de la interfaz
+ * mostrarInterfaz() - El "director" de nuestro index
  * 
  * ¿Cuándo se ejecuta?
  * - Al cargar la página
@@ -311,7 +311,7 @@ async function registrarUsuario(nombre, email, password) {
  * 
  * ¿Qué hace?
  * - Decide qué mostrar según si hay usuario logueado
- * - Usuario NO logueado: formularios login/registro
+ * - Usuario NO logueado: formularios login/registro y productos como catalogo
  * - Usuario SÍ logueado: tienda privada + navegación
  */
 function mostrarInterfaz() {
@@ -320,20 +320,22 @@ function mostrarInterfaz() {
   const authNav       = document.getElementById("authNav");       // Barra superior
   const tiendaSection = document.getElementById("tiendaSection"); // Tienda privada
 
-  const logged = !!estado.usuario; // !! = convierte a true/false
+  const logueado = !!estado.usuario; // nace como null que es false pero no un boolean aqui lo que hace es convertirlo en un boolean
 
   // 📝 FORMULARIOS LOGIN/REGISTRO
   // Mostrar solo si NO está logueado
   if (authSection) {
-    authSection.classList.toggle("hidden", logged); // toggle = añadir/quitar clase
+    authSection.classList.toggle("hidden", logueado); // toggle = añadir/quitar clase
   }
 
   // 🏪 TIENDA PRIVADA (productos + carrito)
   // Mostrar solo si SÍ está logueado
   if (tiendaSection) {
-    tiendaSection.classList.toggle("hidden", !logged); // !logged = lo contrario
-    
-    if (logged) {
+    tiendaSection.classList.toggle("hidden", !logueado); // !logged = lo contrario
+    //toggle es un método de classList que añade o quita una clase CSS a un elemento del DOM.
+    //con dos parametros significa ejecuta ese estilo segun la condicion
+
+    if (logueado) {
       // Si está logueado, cargar datos de la tienda
       cargarCarrito();        // Restaurar carrito desde localStorage
       cargarProductosTienda(); // Mostrar productos con botón "Comprar"
@@ -342,7 +344,7 @@ function mostrarInterfaz() {
 
   // 🧭 NAVEGACIÓN SUPERIOR
   if (authNav) {
-    if (logged) {
+    if (logueado) {
       // Usuario logueado: mostrar nombre + botón salir
       authNav.innerHTML = `
         <span class="user-name">👤 ${estado.usuario.nombre}</span>
