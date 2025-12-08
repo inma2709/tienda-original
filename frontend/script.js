@@ -49,14 +49,15 @@ let estado = {
 // =============================
 
 /**
- * verJSON() - Muestra los datos raw del backend
+ * verJSON() - Muestra los datos raw del backend; es una funcion de comprobación. Aquí decimos ok mi backend funciona 
+ * y se conecta con mi front. Puedo seguir. 
  * 
  * ¿Para qué sirve?
  * - Debugging: Ver exactamente qué datos envía el servidor
- * - Aprendizaje: Entender la estructura de los datos
+ * 
  * 
  * ¿Cómo funciona?
- * 1. Hace una petición GET a /api/productos
+ * 1. Hace una petición GET a /api/productos. 
  * 2. Convierte la respuesta a JSON
  * 3. La muestra en el elemento <pre id="listaProductos">
  */
@@ -299,6 +300,7 @@ async function registrarUsuario(nombre, email, password) {
 // =============================
 // 🎛 INTERFAZ DE USUARIO. 
 // (Mostrar/ocultar secciones según si el usuario esta logado o no: muestra los productos para comprar)
+//Aqui ya hemos introducido cambios para mostrar una interfaz diferente cuando el usuario se loga
 // =============================
 
 /**
@@ -318,7 +320,7 @@ function mostrarInterfaz() {
   // Buscar elementos del DOM
   const authSection   = document.getElementById("authSection");   // Formularios login/registro
   const authNav       = document.getElementById("authNav");       // Barra superior
-  const tiendaSection = document.getElementById("tiendaSection"); // Tienda privada
+  const tiendaSection = document.getElementById("tiendaSection"); // Tienda para usuarios logados 
 
   const logueado = !!estado.usuario; // nace como null que es false pero no un boolean aqui lo que hace es convertirlo en un boolean
 
@@ -328,10 +330,10 @@ function mostrarInterfaz() {
     authSection.classList.toggle("hidden", logueado); // toggle = añadir/quitar clase
   }
 
-  // 🏪 TIENDA PRIVADA (productos + carrito)
-  // Mostrar solo si SÍ está logueado
+  // 🏪 TIENDA para usuarios logados sólo se mostrara si esta logged
+  //hidden está definido en style y es una propiedad del contenedor
   if (tiendaSection) {
-    tiendaSection.classList.toggle("hidden", !logueado); // !logged = lo contrario
+    tiendaSection.classList.toggle("hidden", !logueado); // !logged = no logado 
     //toggle es un método de classList que añade o quita una clase CSS a un elemento del DOM.
     //con dos parametros significa ejecuta ese estilo segun la condicion
 
@@ -432,125 +434,9 @@ function configurarEventosLogin() {
   }
 }
 
-// =============================
-// 🛒 CARRITO (LOCALSTORAGE)
-// =============================
-
-/**
- * cargarCarrito() - Restaura carrito desde localStorage
- * 
- * ¿Cuándo se ejecuta?
- * - Al hacer login
- * - Al recargar página (si ya estaba logueado)
- * 
- * ¿Por qué localStorage?
- * - El carrito se mantiene aunque recargues la página
- * - Mejor experiencia de usuario
- */
-function cargarCarrito() {
-  const guardado = localStorage.getItem("carrito");
-  
-  if (guardado) {
-    // Hay carrito guardado: restaurarlo
-    estado.carrito = JSON.parse(guardado);
-  } else {
-    // No hay carrito: crear uno vacío
-    estado.carrito = { items: [], total: 0 };
-  }
-  
-  actualizarTotalCarrito(); // Calcular total
-  pintarCarrito();         // Mostrar en pantalla
-}
-
-/**
- * guardarCarrito() - Guarda carrito en localStorage y actualiza UI
- * 
- * ¿Cuándo se ejecuta?
- * - Al agregar producto
- * - Al eliminar producto
- * - Al finalizar compra (vaciar carrito)
- */
-function guardarCarrito() {
-  localStorage.setItem("carrito", JSON.stringify(estado.carrito));
-  actualizarTotalCarrito(); // Recalcular total
-  pintarCarrito();         // Actualizar visualización
-}
-
-/**
- * agregarAlCarrito() - Añade producto al carrito
- * 
- * @param {Object} producto - {id, nombre, precio}
- * 
- * ¿Qué hace?
- * 1. Busca si el producto ya está en el carrito
- * 2. Si está: aumenta cantidad
- * 3. Si NO está: lo añade con cantidad = 1
- * 4. Guarda y actualiza
- */
-function agregarAlCarrito(producto) {
-  // ¿Ya existe este producto en el carrito?
-  const existente = estado.carrito.items.find(item => item.id === producto.id);
-
-  if (existente) {
-    // ✅ Producto existe: aumentar cantidad
-    existente.cantidad += 1;
-  } else {
-    // 🆕 Producto nuevo: añadir al carrito
-    estado.carrito.items.push({
-      id: producto.id,
-      nombre: producto.nombre,
-      precio: producto.precio,
-      cantidad: 1
-    });
-  }
-
-  guardarCarrito();
-  console.log("🛒 Carrito:", estado.carrito); // Debug
-  alert(`Añadido ${producto.nombre} al carrito`);
-}
-
-/**
- * eliminarDelCarrito() - Quita completamente un producto
- * 
- * @param {number} id - ID del producto a eliminar
- * 
- * ¿Qué hace?
- * - Usa .filter() para crear nuevo array sin ese producto
- * - Guarda el carrito actualizado
- */
-function eliminarDelCarrito(id) {
-  // .filter() = "crear nuevo array sin los elementos que cumplan condición"
-  estado.carrito.items = estado.carrito.items.filter(item => item.id !== id);
-  guardarCarrito();
-}
-
-/**
- * actualizarTotalCarrito() - Calcula precio total del carrito
- * 
- * ¿Cómo calcula?
- * - Por cada producto: precio × cantidad
- * - Suma todos los subtotales
- * - Usa .reduce() para acumular
- * - Actualiza el span #totalCarrito en el HTML
- */
-function actualizarTotalCarrito() {
-  // .reduce() = "acumular valores en una sola variable"
-  const total = estado.carrito.items
-    .reduce((suma, item) => suma + item.precio * item.cantidad, 0);
-    //        ↑      ↑                    ↑
-    //   acumulador  item actual    operación
-
-  estado.carrito.total = total;
-
-  // Mostrar en el HTML
-  const totalSpan = document.getElementById("totalCarrito");
-  if (totalSpan) {
-    totalSpan.textContent = total.toFixed(2); // .toFixed(2) = 2 decimales
-  }
-}
 
 // =============================
-// 🏪 PRODUCTOS PARA TIENDA PRIVADA
+// 🏪 PRODUCTOS PARA EL CONTENEDOR PARA COMPRAR QUE SE ABRE CUANDO EL USUARIO SE LOGA 
 // (CON botón de comprar - solo usuarios logueados)
 // =============================
 
@@ -564,24 +450,35 @@ function actualizarTotalCarrito() {
  * ¿Misma API?
  * - Sí, usa la misma API /api/productos
  * - Pero muestra diferente HTML (con botones)
+ * /**
+ * obtenerProductos() → Pide productos al backend y devuelve la lista
  */
-async function cargarProductosTienda() {
+async function obtenerProductos() {
   try {
     const respuesta = await fetch(`${URL_API}/productos`);
     const datos = await respuesta.json();
 
     if (respuesta.ok && datos.data) {
-      mostrarProductosTienda(datos.data); // Función diferente
+      return datos.data; // ← devolvemos la lista
     } else {
-      console.error("Error al cargar productos para tienda");
+      console.error("Error al cargar productos");
+      return []; // devuelvo lista vacía para evitar errores
     }
   } catch (error) {
     console.error("Error de conexión:", error);
+    return []; // evitamos que la app se rompa
   }
 }
 
+ 
+async function cargarProductosTienda() {
+  const lista = await obtenerProductos(); 
+  mostrarProductosTienda(lista); 
+}
+
+
 /**
- * mostrarProductosTienda() - Muestra productos CON botón "Agregar al carrito"
+ * mostrarProductosTienda() - Muestra productos que ya teniamos y le agrega el  botón "Agregar al carrito"
  * 
  * @param {Array} lista - Array de productos
  * 
@@ -600,7 +497,7 @@ function mostrarProductosTienda(lista) {
 
   contenedor.innerHTML = lista.map(producto => `
     <div class="product-card">
-      <img src="foto.png" class="product-image" alt="${producto.nombre}">
+      <img src="foto2.png" class="product-image" alt="${producto.nombre}">
       <h3>${producto.nombre}</h3>
       <p>${producto.descripcion || ""}</p>
       <p><strong>${producto.precio}€</strong></p>
@@ -658,10 +555,7 @@ async function finalizarCompra() {
     return;
   }
 
-  if (!estado.token) {
-    alert("Debes iniciar sesión para realizar la compra");
-    return;
-  }
+  
 
   // 📋 PREPARAR DATOS PARA EL BACKEND
   // El controller espera: {productos: [{producto_id, cantidad, precio}], total}
@@ -751,6 +645,128 @@ function pintarCarrito() {
     });
   });
 }
+
+
+// =============================
+// 🛒 CARRITO (LOCALSTORAGE). Este codigo se va a ejecutar cuando alguien ha salido sin cerrar y vuelve a entrar
+//es como restaurar
+// =============================
+
+/**
+ * cargarCarrito() - Restaura carrito desde localStorage cuando el usuario no ha cerrado la sesión pero ha salido de la pagina
+ * 
+ * ¿Cuándo se ejecuta?
+ * - Al hacer login
+ * - Al recargar página (si ya estaba logueado)
+ * 
+ * ¿Por qué localStorage?
+ * - El carrito se mantiene aunque recargues la página
+ * - Mejor experiencia de usuario
+ */
+function cargarCarrito() {
+  const guardado = localStorage.getItem("carrito");
+  
+  if (guardado) {
+    // Hay carrito guardado: restaurarlo
+    estado.carrito = JSON.parse(guardado);
+  } else {
+    // No hay carrito: crear uno vacío
+    estado.carrito = { items: [], total: 0 };
+  }
+  
+  actualizarTotalCarrito(); // Calcular total
+  pintarCarrito();         // Mostrar en pantalla
+}
+
+/**
+ * guardarCarrito() - Guarda carrito en localStorage y actualiza UI
+ * 
+ * ¿Cuándo se ejecuta?
+ * - Al agregar producto
+ * - Al eliminar producto
+ * - Al finalizar compra (vaciar carrito)
+ */
+function guardarCarrito() {
+  localStorage.setItem("carrito", JSON.stringify(estado.carrito));
+  actualizarTotalCarrito(); // Recalcular total
+  pintarCarrito();         // Actualizar visualización
+}
+
+/**
+ * agregarAlCarrito() - Añade producto al carrito
+ * 
+ * @param {Object} producto - {id, nombre, precio}
+ * 
+ * ¿Qué hace?
+ * 1. Busca si el producto ya está en el carrito
+ * 2. Si está: aumenta cantidad
+ * 3. Si NO está: lo añade con cantidad = 1
+ * 4. Guarda y actualiza
+ */
+function agregarAlCarrito(producto) {
+  // ¿Ya existe este producto en el carrito? añade una unidad a la que ya habia
+  const existente = estado.carrito.items.find(item => item.id === producto.id);
+
+  if (existente) {
+    // ✅ Producto existe: aumentar cantidad
+    existente.cantidad += 1;
+  } else {
+    // 🆕 Producto nuevo: añadir al carrito
+    estado.carrito.items.push({
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      cantidad: 1
+    });
+  }
+
+  guardarCarrito();
+  console.log("🛒 Carrito:", estado.carrito); // Debug
+  alert(`Añadido ${producto.nombre} al carrito`);
+}
+
+/**
+ * eliminarDelCarrito() - Quita completamente un producto
+ * 
+ * @param {number} id - ID del producto a eliminar
+ * 
+ * ¿Qué hace?
+ * - Usa .filter() para crear nuevo array sin ese producto
+ * - Guarda el carrito actualizado
+ */
+function eliminarDelCarrito(id) {
+  // .filter() = "crear nuevo array sin los elementos que cumplan condición"
+  //Quédate con todos los elementos cuyo id NO sea igual al que quiero borrar
+  estado.carrito.items = estado.carrito.items.filter(item => item.id !== id);
+  guardarCarrito();
+}
+
+/**
+ * actualizarTotalCarrito() - Calcula precio total del carrito
+ * 
+ * ¿Cómo calcula?
+ * - Por cada producto: precio × cantidad
+ * - Suma todos los subtotales
+ * - Usa .reduce() para acumular
+ * - Actualiza el span #totalCarrito en el HTML
+ */
+function actualizarTotalCarrito() {
+  // reduce() va sumando (precio × cantidad) de cada producto para obtener el total final
+//es un metodo muy potente de js para arrays que permite acumular en una sola variable
+  const total = estado.carrito.items
+    .reduce((suma, item) => suma + item.precio * item.cantidad, 0);
+    //        ↑      ↑                    ↑
+    //   acumulador  item actual    operación
+
+  estado.carrito.total = total;
+
+  // Mostrar en el HTML
+  const totalSpan = document.getElementById("totalCarrito");
+  if (totalSpan) {
+    totalSpan.textContent = total.toFixed(2); // .toFixed(2) = 2 decimales
+  }
+}
+
 
 // =============================
 // 🚀 ARRANQUE DE LA APLICACIÓN
