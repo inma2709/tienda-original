@@ -2,7 +2,6 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-
 import pool from './config/db.js';
 import productosRoutes from './routes/productos.routes.js';
 import authRoutes from "./routes/auth.routes.js";
@@ -19,7 +18,7 @@ app.get('/', (req, res) => {
   res.send('API Node + MySQL - Bloque 3');
 });
 
-// Ruta para probar la conexión con la base de datos
+/* Ruta para probar la conexión con la base de datos
 app.get('/api/probar-bbdd', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT NOW() AS fecha');
@@ -36,16 +35,19 @@ app.get('/api/probar-bbdd', async (req, res) => {
       
     });
   }
-} );
+} );*/
 
-// Rutas de productos
+// Rutas de productos donde se exponen los endpoints
+
 app.use('/api/productos', productosRoutes);
+
 // Rutas de autenticación
 app.use("/api/auth", authRoutes );
 
 // Rutas de pedidos
 
 app.use('/api/pedidos', pedidosRoutes);
+
 // Arrancar el servidor
 const PORT = process.env.PORT || 3000;
 

@@ -11,4 +11,5 @@ export async function obtenerTodos() {
   return rows;  // Aquí le decimos que nos devuelva el array con los datos de la consulta
 }
  
+ //función que accede a la base de datos y a través de un select trae todos los productos de nuestra bbdd
  

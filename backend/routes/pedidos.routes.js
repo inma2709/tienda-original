@@ -19,7 +19,7 @@ router.use(verificarToken);
 router.post('/', pedidosController.crearPedido);
 
 // 📋 2. VER MIS PEDIDOS
-router.get('/mis-pedidos', pedidosController.getMisPedidos);
+router.get('/misPedidos', pedidosController.getMisPedidos);
 
 
 

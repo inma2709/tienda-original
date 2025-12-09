@@ -39,9 +39,10 @@ let estado = {
   token: null,      // 🔑 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   carrito: {        // 🛒 {items: [{id:1, nombre:"Producto", precio:10, cantidad:2}], total: 20}
     items: [],
-    total: 0
+    total: 0 
   }
 };
+
 
 // =============================
 // 📦 PRODUCTOS PÚBLICOS
@@ -54,7 +55,7 @@ let estado = {
  * 
  * ¿Para qué sirve?
  * - Debugging: Ver exactamente qué datos envía el servidor
- * 
+ * -nos ayuda a saber si la conexion a backend es correcta
  * 
  * ¿Cómo funciona?
  * 1. Hace una petición GET a /api/productos. 
@@ -63,7 +64,7 @@ let estado = {
  */
 async function verJSON() {
   try {
-    // fetch() = "Ve y trae los datos de esta URL"
+    // fetch() = "Ve y trae los datos de esta URL" esta url es la de mi server
     const respuesta = await fetch(`${URL_API}/productos`);
     const datos = await respuesta.json();
     
@@ -97,7 +98,7 @@ async function cargarProductos() {
 
     // Verificar que la petición fue exitosa Y que hay datos
     if (respuesta.ok && datos.data) {
-      mostrarProductos(datos.data); // datos.data = array de productos
+      mostrarProductos(datos.data); // datos.data = array de productos; aqui ya carga la variable datos
     } else {
       console.error("Error al cargar productos");
     }
@@ -118,6 +119,7 @@ async function cargarProductos() {
  * 3. Usa .map() para transformar array → HTML
  * 4. Usa .join() para unir todo en un string
  */
+//recorre el array y pinta las tarjetas de productos; producto tiene todos los datos que nos trajo el modelo
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("productos");
   if (!contenedor) return; // Si no existe el elemento, salir
@@ -310,6 +312,8 @@ async function registrarUsuario(nombre, email, password) {
  * - Al cargar la página
  * - Después de login/logout
  * - Después de registro
+ * -Despues de hacer una compra
+ * 
  * 
  * ¿Qué hace?
  * - Decide qué mostrar según si hay usuario logueado
@@ -318,50 +322,68 @@ async function registrarUsuario(nombre, email, password) {
  */
 function mostrarInterfaz() {
   // Buscar elementos del DOM
-  const authSection   = document.getElementById("authSection");   // Formularios login/registro
-  const authNav       = document.getElementById("authNav");       // Barra superior
-  const tiendaSection = document.getElementById("tiendaSection"); // Tienda para usuarios logados 
+  const authSection   = document.getElementById("authSection");
+  const authNav       = document.getElementById("authNav");
+  const tiendaSection = document.getElementById("tiendaSection");
+  const productosPub  = document.getElementById("productos"); // 
 
-  const logueado = !!estado.usuario; // nace como null que es false pero no un boolean aqui lo que hace es convertirlo en un boolean
+  const logueado = !!estado.usuario;
+  console.log("🔎 mostrarInterfaz → logueado:", logueado, "usuario:", estado.usuario);
+
+
+// oculta lista general de productos si esta logueado
+if (productosPub) {
+  if (logueado) {
+    // Ocultar completamente el catálogo público
+    productosPub.style.display = "none";
+  } else {
+    // Mostrar el catálogo público cuando NO está logueado
+    productosPub.style.display = "";
+  }
+}
+
 
   // 📝 FORMULARIOS LOGIN/REGISTRO
-  // Mostrar solo si NO está logueado
   if (authSection) {
-    authSection.classList.toggle("hidden", logueado); // toggle = añadir/quitar clase
+    authSection.classList.toggle("hidden", logueado);
   }
 
-  // 🏪 TIENDA para usuarios logados sólo se mostrara si esta logged
-  //hidden está definido en style y es una propiedad del contenedor
+  // 🏪 SECCIÓN TIENDA (PARA USUARIOS LOGADOS)
   if (tiendaSection) {
-    tiendaSection.classList.toggle("hidden", !logueado); // !logged = no logado 
-    //toggle es un método de classList que añade o quita una clase CSS a un elemento del DOM.
-    //con dos parametros significa ejecuta ese estilo segun la condicion
+    tiendaSection.classList.toggle("hidden", !logueado);
 
     if (logueado) {
-      // Si está logueado, cargar datos de la tienda
-      cargarCarrito();        // Restaurar carrito desde localStorage
-      cargarProductosTienda(); // Mostrar productos con botón "Comprar"
+      cargarCarrito();
+      cargarProductosTienda();
     }
   }
 
   // 🧭 NAVEGACIÓN SUPERIOR
   if (authNav) {
     if (logueado) {
-      // Usuario logueado: mostrar nombre + botón salir
       authNav.innerHTML = `
         <span class="user-name">👤 ${estado.usuario.nombre}</span>
+         <button id="verPedidosButton" class="btn btn-outline">📋 Mis Pedidos</button>
         <button id="logoutButton" class="btn btn-outline">Cerrar sesión</button>
       `;
-      // Conectar el botón con la función
+
+      // Evento para ver pedidos
+    document.getElementById("verPedidosButton").addEventListener("click", () => {
+      const misPedidosSection = document.getElementById("misPedidosSection");
+      if (misPedidosSection) {
+        misPedidosSection.classList.remove("hidden");
+        cargarMisPedidos();
+      }
+    });
       document
         .getElementById("logoutButton")
         .addEventListener("click", cerrarSesion);
     } else {
-      // Usuario NO logueado: mensaje informativo
       authNav.innerHTML = `<span>Inicia sesión para comprar</span>`;
     }
   }
 }
+
 
 /**
  * configurarEventosLogin() - Conecta formularios HTML con funciones JS
@@ -455,8 +477,8 @@ function configurarEventosLogin() {
  */
 async function obtenerProductos() {
   try {
-    const respuesta = await fetch(`${URL_API}/productos`);
-    const datos = await respuesta.json();
+    const respuesta = await fetch(`${URL_API}/productos`);//  select del modelo productos
+    const datos = await respuesta.json();//esta es la devolución de productos 
 
     if (respuesta.ok && datos.data) {
       return datos.data; // ← devolvemos la lista
@@ -466,13 +488,13 @@ async function obtenerProductos() {
     }
   } catch (error) {
     console.error("Error de conexión:", error);
-    return []; // evitamos que la app se rompa
+    return []; // evitamos que la app se rompa devolviendo algo aunque sea vacio
   }
 }
 
  
 async function cargarProductosTienda() {
-  const lista = await obtenerProductos(); 
+  const lista = await obtenerProductos(); //lista es un array de los datos que nos vienen del select
   mostrarProductosTienda(lista); 
 }
 
@@ -502,6 +524,7 @@ function mostrarProductosTienda(lista) {
       <p>${producto.descripcion || ""}</p>
       <p><strong>${producto.precio}€</strong></p>
       <p>Stock: ${producto.stock}</p>
+      
       <button
         class="btn-agregar"
         data-id="${producto.id}"
@@ -753,6 +776,7 @@ function eliminarDelCarrito(id) {
 function actualizarTotalCarrito() {
   // reduce() va sumando (precio × cantidad) de cada producto para obtener el total final
 //es un metodo muy potente de js para arrays que permite acumular en una sola variable
+//total el resultado de aplicar una operacion a todos los elementos del array para sumar y mostrar un valor final
   const total = estado.carrito.items
     .reduce((suma, item) => suma + item.precio * item.cantidad, 0);
     //        ↑      ↑                    ↑
@@ -766,6 +790,88 @@ function actualizarTotalCarrito() {
     totalSpan.textContent = total.toFixed(2); // .toFixed(2) = 2 decimales
   }
 }
+
+//=============
+//MOSTRAR LOS PEDIDOS REALIZADOS POR EL USUARIO usando el metodo del modelo de lineas pedidos
+//=============
+/**
+ * cargarMisPedidos() - Pide al backend los pedidos del usuario logado
+ * y los pinta  en el contenedor #misPedidos.
+ */
+async function cargarMisPedidos() {
+  const contenedor = document.getElementById("misPedidos");
+  const misPedidosSection = document.getElementById("misPedidosSection")
+  if (!contenedor) return;
+
+  // Por si tarda un poco:
+  contenedor.innerHTML = "<p>Cargando tus pedidos...</p>";
+
+  try {
+    const respuesta = await fetch(`${URL_API}/pedidos/misPedidos`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${estado.token}` // Necesita estar logueado
+      }
+    });
+
+    const datos = await respuesta.json();
+    console.log("📥 Mis pedidos:", respuesta.status, datos);
+
+    if (!respuesta.ok) {
+      contenedor.innerHTML = `<p class="error">
+        ${datos.message || "No se pudieron cargar los pedidos"}
+      </p>`;
+      return;
+    }
+
+    const pedidos = datos.data || [];
+    //console log para ver exactamente que me esta devolviendo el back 
+    console.log("👉 pedidos completos:", pedidos);
+if (pedidos[0]?.productos?.length) {
+  console.log("👉 ejemplo de línea:", pedidos[0].productos[0]);
+}
+
+
+    // Si no tiene pedidos aún
+    if (!pedidos.length) {
+      contenedor.innerHTML = "<p>No tienes pedidos todavía.</p>";
+      return;
+    }
+
+    // Pintar cada pedido con sus productos
+    contenedor.innerHTML = pedidos.map(pedido => {
+    const lineas = pedido.productos
+  .map(prod => `
+    <li>
+      <strong>${prod.producto_nombre}</strong>
+      — ${prod.cantidad} x ${prod.producto_precio}€ =
+      ${(prod.cantidad * prod.producto_precio).toFixed(2)}€
+    </li>
+  `)
+  .join("");
+
+
+      return `
+        <article class="pedido-card">
+          <header class="pedido-header">
+            <span>🧾 Pedido #${pedido.id}</span>
+            <span>${new Date(pedido.fecha).toLocaleString()}</span>
+            <span class="pedido-estado">${pedido.estado}</span>
+          </header>
+          <ul class="pedido-lineas">
+            ${lineas}
+          </ul>
+        </article>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("❌ Error al cargar mis pedidos:", error);
+    contenedor.innerHTML = "<p class='error'>Error de conexión al cargar tus pedidos.</p>";
+  }
+}
+
 
 
 // =============================
